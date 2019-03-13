@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,9 +18,8 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState != null){
             countDown = savedInstanceState.getInt(CURRENT_COUNTER);
         }
-
         CountDown();
-        running= true;
+       running= true;
     }
     // 11-03-2019
     @Override
@@ -37,8 +37,10 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 textView.setText(Integer.toString(countDown));
                // If u put the if condition in here U'll have to replace -1 with 0
-                countDown--;
-                handler.postDelayed(this, 1000);
+                if(running==true) {
+                    countDown--;
+                }
+                handler.postDelayed(this, 100);
                 //---
                 if(countDown==-1){
                     countDown=100; // Resetting the Counter
@@ -47,10 +49,32 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    } // 13-03-2019
+
+    protected void  StartCount(View view){
+        running = true;
     }
+
+    protected void StopCounter(View view){
+        running = false;
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+       //running= false;
+    }
+
+    @Override
+    public void onStart(){ // You can use onRestart as well
+        super.onStart();
+        running=false;
+    }
+
     @Override
     public void onStop(){
         super.onStop();
         wasRunning = true;
+        running= false;
     }
 }
